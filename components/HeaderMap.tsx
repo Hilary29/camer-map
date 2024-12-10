@@ -3,8 +3,6 @@
 import * as React from "react"
 import logo from '../public/img/C@merMap.png'
 
-import { GlobeIcon } from "lucide-react"
-import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
 import {
   NavigationMenu,
@@ -16,6 +14,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import Image from "next/image"
 import CountDown from "./CountDown"
+import LanguageSwitcher from "./LanguageSwitcher"
 
 const targetDate="2024-12-19T07:20:00";
 
@@ -155,12 +154,8 @@ export function HeaderMap() {
 
         <div className="flex items-center gap-[18px] font-inter text-paragraph-md">
             <CountDown targetDate={targetDate} />
-          <Button
-            className="flex items-center bg-transparent hover:bg-[#ffffff1b] border-2  p-1.5 rounded-md text-white-50 " 
-            >
-            <GlobeIcon className="text-[24px]"/>
-            FR
-          </Button>
+            <LanguageSwitcher/>
+
         </div>
       </div>
    </header>
