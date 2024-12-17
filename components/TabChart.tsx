@@ -8,7 +8,7 @@ const TabChart = () => {
   return (
     <div>
       <Tabs defaultValue="cercle" className="max-w-[350px] ">
-        <TabsList className="bg-transparent ">
+        <TabsList className="bg-transparent pl-10">
           <TabsTrigger value="cercle" >icone Circle</TabsTrigger>
           <TabsTrigger value="barre">icone Barre</TabsTrigger>
         </TabsList>

@@ -1,15 +1,17 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { CircleChart } from "./CircleChart";
-import { HorizontalChart } from "./HorizontalChart";
+/* import { CircleChart } from "./CircleChart";
+import { HorizontalChart } from "./HorizontalChart"; */
 import TabChart from "./TabChart";
+import { useTranslations } from "next-intl";
 
 const Map = dynamic(() => import("./Map"), { ssr: false });
 
 
 
 export default function HeroMap() {
+  const t = useTranslations("NavBarLinks")
   return (
     <section id="HeroMap">
       <div className=" bg-[url('/img/font.png')] bg-cover bg-center min-h-screen flex flex-col ">

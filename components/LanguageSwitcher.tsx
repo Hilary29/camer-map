@@ -1,5 +1,7 @@
 import React, { useState, useRef } from "react";
 import { GlobeIcon } from "lucide-react";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const LanguageSwitcher = () => {
   const [language, setLanguage] = useState("fr");
@@ -31,13 +33,13 @@ const LanguageSwitcher = () => {
             onClick={() => handleLanguageChange("fr")}
             className="cursor-pointer px-5 py-1 hover:bg-[#ffffff76]  transition"
           >
-            FR
+            <Link href={"/fr"}>FR</Link>
           </li>
           <li
             onClick={() => handleLanguageChange("en")}
             className="cursor-pointer px-5 py-1  hover:bg-[#ffffff76]  transition"
           >
-            EN
+            <Link href={"/en"}>EN</Link>
           </li>
         </ul>
       )}

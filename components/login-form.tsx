@@ -15,7 +15,7 @@ export function LoginForm() {
   return (
     <div >
       
-      <Card className="mx-auto w-[30%] max-w-sm bg-[#ffffff26]">
+      <Card className="mx-auto w-[25%] min-w-[250px] bg-[#ffffff17] border-none">
       <CardHeader>
         <CardTitle className="text-2xl text-white-50 mx-auto">Authentification</CardTitle>
         <CardDescription>
@@ -23,9 +23,11 @@ export function LoginForm() {
         </CardDescription> 
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
+        <div className="grid gap-8 font-regular text-paragraph-md font-inter">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="font-regular text-paragraph-md font-inter text-black-600">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
@@ -35,14 +37,16 @@ export function LoginForm() {
           </div>
           <div className="grid gap-2">
             <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="font-regular text-paragraph-md font-inter text-black-600">
+                Password
+              </Label>
 {/*               <Link href="#" className="ml-auto inline-block text-sm underline">
                 Forgot your password?
               </Link> */}
             </div>
             <Input id="password" type="password" required />
           </div>
-          <Button type="submit" className="w-full hover:bg-primary-700 bg-primary-800">
+          <Button type="submit" className="w-full font-semibold font-inter hover:bg-primary-700 bg-primary-800">
             Login
           </Button>
 {/*           <Button variant="outline" className="w-full">

@@ -53,7 +53,7 @@ const chartConfig = {
 
 export function HorizontalChart() {
   return (
-    <Card>
+    <Card className="bg-transparent border-none">
       <CardHeader>
         <CardTitle>Bar Chart - Mixed</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
