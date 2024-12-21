@@ -15,9 +15,9 @@ import {
 import Image from "next/image"
 import CountDown from "./CountDown"
 import LanguageSwitcher from "./LanguageSwitcher"
-import { useTranslations } from "next-intl"
 
-const targetDate="2024-12-19T07:20:00";
+
+const targetDate="2024-12-29T07:20:00";
 
 
 const ListItem = React.forwardRef<
@@ -61,7 +61,7 @@ const components: { title: string; href: string; description: string }[] = [
 ]
 
 export function HeaderMap() {
-const t = useTranslations("NavBarLinks") 
+
   return (
     <header className=" fixed top-0 left-0 w-full  z-50">
       <div className=" mx-auto flex justify-between items-center px-16 py-1.5">
@@ -79,7 +79,7 @@ const t = useTranslations("NavBarLinks")
           <NavigationMenu className=" text-black-100 ">
             <NavigationMenuList className="gap-2">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-white-50 font-inter p-2 bg-[#093B14] rounded-sm ">{t("elections_Presidentielles")}</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-white-50 font-inter p-2 bg-[#093B14] rounded-sm ">Elections Presidentielles</NavigationMenuTrigger>
                 <NavigationMenuContent>
                 <ul className="grid w-[300px] gap-3 p-4">
               {components.map((component) => (
