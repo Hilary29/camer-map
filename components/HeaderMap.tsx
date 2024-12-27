@@ -49,13 +49,13 @@ ListItem.displayName = "ListItem"
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Election Senatoriale",
-    href: "/docs/primitives/progress",
+    href: "/",
     description:
       "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
   },
   {
     title: "Election Legislative",
-    href: "/docs/primitives/scroll-area",
+    href: "/",
     description: "Visually or semantically separates content.",
   }
 ]
@@ -79,7 +79,7 @@ export function HeaderMap() {
           <NavigationMenu className=" text-black-100 ">
             <NavigationMenuList className="gap-2">
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-white-50 font-inter p-2 bg-[#093B14] rounded-sm ">Elections Presidentielles</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="text-white font-inter p-2 bg-[#093B14] rounded-sm ">Elections Presidentielles</NavigationMenuTrigger>
                 <NavigationMenuContent>
                 <ul className="grid w-[300px] gap-3 p-4">
               {components.map((component) => (
@@ -98,7 +98,7 @@ export function HeaderMap() {
           </NavigationMenu>
         </nav>
 
-        <div className="flex items-center gap-[18px] font-inter text-paragraph-md">
+        <div className="flex items-center text-white gap-[18px] font-inter text-paragraph-md">
             <CountDown targetDate={targetDate} />
             <LanguageSwitcher/>
         </div>

@@ -101,42 +101,6 @@ const config: Config = {
   				'800': '#04297A',
   				'900': '#041556'
   			},
-  			white: {
-  				'50': '#FFFFFF',
-  				'100': '#F4F4F4',
-  				'200': '#E4E4E4',
-  				'300': '#D4D4D4',
-  				'400': '#A3A3A3',
-  				'500': '#858585',
-  				'600': '#666666',
-  				'700': '#474747',
-  				'800': '#282828',
-  				'900': '#121212'
-  			},
-  			gray: {
-  				'50': '#F2F2F2',
-  				'100': '#E5E5E5',
-  				'200': '#D8D8D8',
-  				'300': '#CBCBCB',
-  				'400': '#BDBDBD',
-  				'500': '#A8A8A8',
-  				'600': '#959595',
-  				'700': '#828282',
-  				'800': '#696969',
-  				'900': '#525252'
-  			},
-  			black: {
-  				'50': '#121212',
-  				'100': '#282828',
-  				'200': '#474747',
-  				'300': '#666666',
-  				'400': '#858585',
-  				'500': '#A8A8A8',
-  				'600': '#BDBDBD',
-  				'700': '#CBCBCB',
-  				'800': '#D8D8D8',
-  				'900': '#E5E5E5'
-  			},
 			gradientStart: "#1A3441", // Couleur de départ du dégradé
 			gradientMiddle: "#284F5E", // Couleur intermédiaire
 			gradientEnd: "#376B7D",
@@ -180,6 +144,7 @@ const config: Config = {
   			}
   		},
   		fontFamily: {
+			gravitas: ["var(--font-gravitas)"],
   			satoshi: ['Satoshi', 'sans-serif'],
   			inter: ['Inter', 'sans-serif'],
   			poppins: ['Poppins', 'sans-serif']
