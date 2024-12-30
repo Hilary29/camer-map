@@ -17,7 +17,7 @@ import CountDown from "./CountDown"
 import LanguageSwitcher from "./LanguageSwitcher"
 
 
-const targetDate="2024-12-29T07:20:00";
+const targetDate="2024-12-30T14:20:00";
 
 
 const ListItem = React.forwardRef<
