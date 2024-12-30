@@ -34,6 +34,7 @@ import {
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Candidate, VotingResults } from "@/types/election"
+import { CandidateManagement } from "./candidate-form"
 
 const formSchema = z.object({
   id: z.string().min(1, "L'identifiant est requis"),
@@ -76,9 +77,11 @@ const departments: Record<string, string[]> = {
 interface VotingStationFormProps {
   candidates: Candidate[]
   onSubmit: (data: VotingResults) => Promise<void>
+  onAddCandidate: (candidate: Omit<Candidate, "id">) => Promise<void>
+  onRemoveCandidate: (id: string) => Promise<void>
 }
 
-export function VotingStationForm({ candidates, onSubmit }: VotingStationFormProps) {
+export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemoveCandidate }: VotingStationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -308,6 +311,12 @@ export function VotingStationForm({ candidates, onSubmit }: VotingStationFormPro
             </div>
           </CardContent>
         </Card>
+
+        <CandidateManagement
+          candidates={candidates}
+          onAddCandidate={onAddCandidate}
+          onRemoveCandidate={onRemoveCandidate}
+        />
 
         <Card>
           <CardHeader>

@@ -24,9 +24,25 @@ export interface VotingStation {
     party: string
   }
   
-  export interface VotingResults extends VotingStation {
-    candidateVotes: CandidateVotes[]
+  export interface VotingResults {
+    id: string
+    region: string
+    department: string
+    commune: string
+    openingTime: string
+    closingTime: string
+    registeredVoters: number
+    actualVoters: number
+    nullVotes: number
+    blankVotes: number
+    authenticated: boolean
+    candidateVotes: Array<{
+      candidateId: string
+      votes: number
+    }>
   }
+  
+  
   
   export interface AggregatedResults {
     totalVotes: number
