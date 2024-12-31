@@ -10,6 +10,7 @@ const layers = [
 ];
 
 const MultiLayerMap: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [geoData, setGeoData] = useState<any[]>([]);
 
   useEffect(() => {

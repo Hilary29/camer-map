@@ -52,7 +52,6 @@ const initialResults: VotingResults[] = [
     blankVotes: 50,
     authenticated: true,
   },
-  // Ajoutez plus de résultats ici
 ]
 
 export default function ElectionResults() {
@@ -60,6 +59,7 @@ export default function ElectionResults() {
   const [selectedRegion, setSelectedRegion] = useState("")
   const [selectedDepartment, setSelectedDepartment] = useState("")
   const [activeTab, setActiveTab] = useState("results")
+  const [managedCandidates, setManagedCandidates] = useState<Candidate[]>(candidates)
 
   const filteredResults = results.filter(result => 
     (!selectedRegion || result.region === selectedRegion) &&
@@ -76,6 +76,18 @@ export default function ElectionResults() {
       console.error("Erreur lors de la sauvegarde:", error)
       throw error
     }
+  }
+
+  const handleAddCandidate = async (candidate: Omit<Candidate, "id">) => {
+    const newId = String(managedCandidates.length + 1)
+    const newCandidate: Candidate = { ...candidate, id: newId }
+    setManagedCandidates(prev => [...prev, newCandidate])
+    return Promise.resolve()
+  }
+
+  const handleRemoveCandidate = async (candidateId: string) => {
+    setManagedCandidates(prev => prev.filter(c => c.id !== candidateId))
+    return Promise.resolve()
   }
 
   return (
@@ -100,7 +112,7 @@ export default function ElectionResults() {
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               <StatisticsCard
                 results={aggregated}
-                candidates={candidates}
+                candidates={managedCandidates}
                 title={
                   selectedRegion
                     ? selectedDepartment
@@ -161,7 +173,7 @@ export default function ElectionResults() {
 
             <ResultsTable
               stations={results}
-              candidates={candidates}
+              candidates={managedCandidates}
               selectedRegion={selectedRegion}
               selectedDepartment={selectedDepartment}
               onRegionChange={setSelectedRegion}
@@ -179,8 +191,10 @@ export default function ElectionResults() {
               </CardHeader>
               <CardContent>
                 <VotingStationForm
-                  candidates={candidates}
+                  candidates={managedCandidates}
                   onSubmit={handleSubmit}
+                  onAddCandidate={handleAddCandidate}
+                  onRemoveCandidate={handleRemoveCandidate}
                 />
               </CardContent>
             </Card>
