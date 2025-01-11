@@ -1,10 +1,10 @@
 # Les pages
 / : pour l'affichage de la carte et resultats en temps reel
-# 
-/authentication: authentification des administrateurs.
-#
-/form: pour le remplissage par les administrateurs.
 
+/authentication: authentification des administrateurs.
+
+/form: pour le remplissage par les administrateurs.
+#
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
