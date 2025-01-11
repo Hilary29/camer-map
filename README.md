@@ -1,3 +1,9 @@
+Les pages
+/ : pour l'affichage de la carte et resultats en temps reel
+/authentication: authentification des administrateurs
+/dashboard: pour le remplissage par les admin
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

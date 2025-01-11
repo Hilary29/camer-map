@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
       <div className="flex items-center py-4">     
              <Image
-             src='/img/C@merMap.png'
+             src='/img/C@merMap.png' 
              width={126}
              height={126}
              alt="logo"

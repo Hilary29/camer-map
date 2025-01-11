@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { format } from "date-fns"
-import { fr } from "date-fns/locale"
-import { CalendarIcon, Loader2 } from 'lucide-react'
+import { useState, useEffect  } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { CalendarIcon, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -17,24 +17,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Candidate, VotingResults } from "@/types/election"
-import { CandidateManagement } from "./candidate-form"
+} from "@/components/ui/select";
+
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Candidate, VotingResults } from "@/types/election";
+import { CandidateManagement } from "./candidate-form";
+import {regions, departments, communes} from "../lib/admin-division"
 
 const formSchema = z.object({
   id: z.string().min(1, "L'identifiant est requis"),
@@ -54,35 +51,27 @@ const formSchema = z.object({
       votes: z.number().min(0, "Le nombre doit être positif"),
     })
   ),
-})
+  centerName: z.string().optional(),  // Propriété optionnelle
+  bureauId: z.string().optional(),    // Propriété optionnelle
+  electionType: z.string().optional(), // Propriété optionnelle
+});
 
-const regions = [
-  "Adamaoua",
-  "Centre",
-  "Est",
-  "Extrême-Nord",
-  "Littoral",
-  "Nord",
-  "Nord-Ouest",
-  "Ouest",
-  "Sud",
-  "Sud-Ouest",
-]
-
-const departments: Record<string, string[]> = {
-  Centre: ["Mfoundi", "Lekié", "Nyong-et-Kellé"],
-  // Ajoutez les départements pour chaque région
-}
 
 interface VotingStationFormProps {
-  candidates: Candidate[]
-  onSubmit: (data: VotingResults) => Promise<void>
-  onAddCandidate: (candidate: Omit<Candidate, "id">) => Promise<void>
-  onRemoveCandidate: (id: string) => Promise<void>
+  candidates: Candidate[];
+  onSubmit: (data: VotingResults) => Promise<void>;
+  onAddCandidate: (candidate: Omit<Candidate, "id">) => Promise<void>;
+  onRemoveCandidate: (id: string) => Promise<void>;
 }
 
-export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemoveCandidate }: VotingStationFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export function VotingStationForm({
+  candidates,
+  onSubmit,
+  onAddCandidate,
+  onRemoveCandidate,
+}: VotingStationFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -94,34 +83,38 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
       nullVotes: 0,
       blankVotes: 0,
       authenticated: true, // Valeur par défaut pour authenticated
-      candidateVotes: candidates.map(candidate => ({
+      candidateVotes: candidates.map((candidate) => ({
         candidateId: candidate.id,
         votes: 0,
       })),
     },
-  })
+  });
+
+
+  const region = form.watch("region");
+  const department = form.watch("department");
 
   async function handleSubmit(values: z.infer<typeof formSchema>) {
     try {
-      setIsSubmitting(true)
-      await onSubmit(values)
-      form.reset()
+      setIsSubmitting(true);
+      await onSubmit(values);
+      form.reset();
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-        <Card>
+      <Card>
           <CardHeader>
             <CardTitle>Informations du Bureau de Vote</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="id"
@@ -142,14 +135,14 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Région</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ''}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Sélectionnez une région" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {regions.map(region => (
+                        {regions.map((region) => (
                           <SelectItem key={region} value={region}>
                             {region}
                           </SelectItem>
@@ -161,44 +154,59 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="department"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Département</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez un département" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {departments[form.watch("region")]?.map(department => (
-                          <SelectItem key={department} value={department}>
-                            {department}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {region && (
+                <FormField
+                  control={form.control}
+                  name="department"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Département</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez un département" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {departments[region]?.map((department) => (
+                            <SelectItem key={department} value={department}>
+                              {department}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
-              <FormField
-                control={form.control}
-                name="commune"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Commune</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {region && department && (
+                <FormField
+                  control={form.control}
+                  name="commune"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Commune</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || ''}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez une commune" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {communes[region]?.[department]?.map((commune) => (
+                            <SelectItem key={commune} value={commune}>
+                              {commune}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <FormField
                 control={form.control}
@@ -231,6 +239,7 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
           </CardContent>
         </Card>
 
+
         <Card>
           <CardHeader>
             <CardTitle>Résultats du Vote</CardTitle>
@@ -244,10 +253,10 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
                   <FormItem>
                     <FormLabel>Électeurs inscrits</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         {...field}
-                        onChange={e => field.onChange(Number(e.target.value))}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -262,10 +271,10 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
                   <FormItem>
                     <FormLabel>Votants</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         {...field}
-                        onChange={e => field.onChange(Number(e.target.value))}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -280,10 +289,10 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
                   <FormItem>
                     <FormLabel>Votes nuls</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         {...field}
-                        onChange={e => field.onChange(Number(e.target.value))}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -298,10 +307,10 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
                   <FormItem>
                     <FormLabel>Votes blancs</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
+                      <Input
+                        type="number"
                         {...field}
-                        onChange={e => field.onChange(Number(e.target.value))}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -332,13 +341,16 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        {candidate.firstName} {candidate.lastName} ({candidate.party})
+                        {candidate.firstName} {candidate.lastName} (
+                        {candidate.party})
                       </FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           {...field}
-                          onChange={e => field.onChange(Number(e.target.value))}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -358,6 +370,5 @@ export function VotingStationForm({ candidates, onSubmit, onAddCandidate, onRemo
         </div>
       </form>
     </Form>
-  )
+  );
 }
-
