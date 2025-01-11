@@ -1,7 +1,6 @@
 export interface Candidate {
   id: string
-  firstName: string
-  lastName: string
+  name: string
   party: string
 }
 
@@ -11,21 +10,24 @@ export interface CandidateVote {
 }
 
 export interface VotingResults {
-  id?: string
-  centerName: string
-  bureauId: string
-  region: string
-  department: string
-  commune: string
-  candidateVotes: CandidateVote[]
-  openingTime: string
-  closingTime: string
-  registeredVoters: number
-  actualVoters: number
-  nullVotes: number
-  blankVotes: number
-  authenticated: boolean
-  electionType: string,
+  id: string;
+  region: string;
+  department: string;
+  commune: string;
+  openingTime: string;
+  closingTime: string;
+  registeredVoters: number;
+  actualVoters: number;
+  nullVotes: number;
+  blankVotes: number;
+  authenticated: boolean;
+  centerName: string;
+  bureauId: string;
+  electionType: string;
+  candidateVotes: {
+    candidateId: string;
+    votes: number;
+  }[];
 }
   
   

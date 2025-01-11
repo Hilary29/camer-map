@@ -14,8 +14,8 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Saisie",
-    url: "/dashboard",
+    title: "Saisie des resultats",
+    url: "/form",
     icon: Home,
   },
   {
