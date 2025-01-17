@@ -17,7 +17,7 @@ import CountDown from "./CountDown"
 import LanguageSwitcher from "./LanguageSwitcher"
 
 
-const targetDate="2024-12-30T14:20:00";
+const targetDate="2025-01-22T14:20:00";
 
 
 const ListItem = React.forwardRef<
@@ -64,8 +64,7 @@ export function HeaderMap() {
 
   return (
     <header className=" fixed top-0 left-0 w-full  z-50">
-      <div className=" mx-auto flex justify-between items-center px-16 py-1.5">
-      
+      <div className=" mx-auto flex justify-between items-center px-16 py-1.5">     
         <div className="flex items-center gap-2">     
              <Image
              src={logo}

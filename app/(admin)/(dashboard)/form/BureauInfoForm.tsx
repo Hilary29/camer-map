@@ -36,8 +36,6 @@ export function BureauInfoForm({
     defaultValues: formData,
   });
 
-  const region = watch("region");
-  const department = watch("department");
 
   const handleSave = (data: VotingResults) => {
     setFormData({ ...formData, ...data });
