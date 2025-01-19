@@ -1,6 +1,6 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
+import { Users } from 'lucide-react'
 import { Bar, BarChart, XAxis, YAxis } from "recharts"
 
 import {
@@ -17,83 +17,89 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+
 const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
+  { candidate: "macron", votes: 18768639, fill: "#4988ed" },
+  { candidate: "lepen", votes: 13288686, fill: "#c80b41" },
+  { candidate: "melenchon", votes: 7712520, fill: "#c8161d" },
+  { candidate: "zemmour", votes: 2485226, fill: "#16c89b" },
 ]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  votes: {
+    label: "Voix",
   },
-  chrome: {
-    label: "Chrome",
+  macron: {
+    label: "Emmanuel Macron",
     color: "hsl(var(--chart-1))",
   },
-  safari: {
-    label: "Safari",
+  lepen: {
+    label: "Marine Le Pen", 
     color: "hsl(var(--chart-2))",
   },
-  firefox: {
-    label: "Firefox",
+  melenchon: {
+    label: "Jean-Luc Mélenchon",
     color: "hsl(var(--chart-3))",
   },
-  edge: {
-    label: "Edge",
+  zemmour: {
+    label: "Éric Zemmour",
     color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
   },
 } satisfies ChartConfig
 
 export function HorizontalChart() {
+  // Calculer le total des voix
+  const totalVotes = chartData.reduce((sum, item) => sum + item.votes, 0)
+
   return (
-    <Card className="bg-transparent border-none">
+    <Card className="w-full bg-transparent border-none">
       <CardHeader>
-        <CardTitle>Bar Chart - Mixed</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle className='text-white'>Résultats Élection Présidentielle</CardTitle>
+        <CardDescription></CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart
+          <BarChart 
             accessibilityLayer
             data={chartData}
             layout="vertical"
+            barCategoryGap="20%" // Augmente l'espace entre les barres
             margin={{
-              left: 0,
+              left: 30,
             }}
           >
             <YAxis
-              dataKey="browser"
+              dataKey="candidate"
               type="category"
               tickLine={false}
-              tickMargin={10}
+              tickMargin={4}
               axisLine={false}
+              tick={{ fill: '#ffffff', fontSize: 16 }} // Noms des candidats en blanc
               tickFormatter={(value) =>
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
             />
-            <XAxis dataKey="visitors" type="number" hide />
+            <XAxis 
+              dataKey="votes" 
+              type="number" 
+              hide 
+            />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent 
+                formatter={(value) => value.toLocaleString()} 
+                hideLabel 
+              />}
             />
-            <Bar dataKey="visitors" layout="vertical" radius={5} />
+            <Bar dataKey="votes" layout="vertical" radius={4} />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+      <CardFooter className="flex-col items-start gap-2 text-lg">
+        <div className="flex gap-2 font-medium text-white leading-none">
+          Total des votes exprimés: {totalVotes.toLocaleString()} <Users className="h-4 w-4" />
         </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
+
       </CardFooter>
     </Card>
   )
