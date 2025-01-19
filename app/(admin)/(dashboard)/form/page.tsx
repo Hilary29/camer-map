@@ -1,40 +1,166 @@
-"use client";
-import React from "react";
-import { VotingWizard } from "./VotingWizard";
-import { Candidate, VotingResults } from "@/types/election";
-import { useForm, FormProvider } from "react-hook-form";
+'use client';
+
+import { useState } from "react";
+import { ChevronLeftCircle, ChevronRightCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import Step1 from "./Step1";
+import Step2 from "./step2";
+import Step3 from "./step3";
+import { Candidate, VotingResults } from "../../../../types/election";
+import { v4 as uuidv4 } from 'uuid';
+
+const MOCK_CANDIDATES: Candidate[] = [
+  { id: '1', name: 'Candidat A', party: 'Parti A' },
+  { id: '2', name: 'Candidat B', party: 'Parti B' },
+  { id: '3', name: 'Candidat C', party: 'Parti C' },
+];
 
 export default function Page() {
-  const candidates: Candidate[] = [
-    { id: "1", name: "Candidate 1", party: "Party 1" },
-    { id: "2", name: "Candidate 2", party: "Party 2" },
-    { id: "3", name: "Candidate 3", party: "Party 3" },
-  ];
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState<Partial<VotingResults>>({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const formMethods = useForm<VotingResults>();
+  const progress = (step / 3) * 100;
 
-  const handleSubmit = async (data: VotingResults) => {
+  const handleStep1Complete = (data: Pick<VotingResults, 'centerName' | 'department' | 'commune' | 'region'>) => {
+    setFormData(prev => ({
+      ...prev,
+      ...data
+    }));
+  };
+
+  const handleStep2Complete = (data: Pick<VotingResults, 'registeredVoters' | 'actualVoters' | 'candidateVotes'>) => {
+    setFormData(prev => ({
+      ...prev,
+      ...data
+    }));
+  };
+
+  const handleStep3Complete = (pvImage: string) => {
+    setFormData(prev => ({
+      ...prev,
+      pvImage
+    }));
+  };
+
+  const handleSubmit = async () => {
     try {
-      console.log("Submitting data:", data);
-      // Envoyez les données à une API ou enregistrez-les dans une base de données
-      await fetch("/api/submit-voting-results", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+      setLoading(true);
+      setError(null);
+
+      const finalData: VotingResults = {
+        id: uuidv4(),
+        ...formData,
+        authenticated: false,
+        openingTime: '08:00',
+        closingTime: '18:00',
+        electionType: 'présidentielle',
+        bureauId: '1', // Ces valeurs devraient venir de l'API
+        region: formData.region || '',
+        registeredVoters: formData.registeredVoters || 0,
+        actualVoters: formData.actualVoters || 0,
+        candidateVotes: formData.candidateVotes || [],
+        nullVotes: 0,  // Set to 0 as it's not being entered
+        blankVotes: 0, // Set to 0 as it's not being entered
+      };
+
+      const response = await fetch('/api/submit-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(finalData),
       });
-      alert("Données soumises avec succès !");
-    } catch (error) {
-      console.error("Erreur lors de la soumission :", error);
-      alert("Une erreur est survenue lors de la soumission.");
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la soumission des résultats');
+      }
+
+      window.location.href = '/results/success';
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Une erreur est survenue");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="py-12">
-      <h1 className="text-2xl font-semibold font-satoshi mb-4 ">Saisie des résultats de vote</h1>
-      <FormProvider {...formMethods}>
-        <VotingWizard candidates={candidates} onSubmit={handleSubmit} />
-      </FormProvider>
+    <div className="min-h-screen p-8">
+      <div className="max-w-2xl mx-auto mb-8">
+        <Progress value={progress} className="h-2" />
+        <div className="flex justify-between mt-2">
+          <span className="text-sm text-gray-500">Étape {step} sur 3</span>
+          <span className="text-sm text-gray-500">{Math.round(progress)}%</span>
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto space-y-8">
+        {step === 1 && (
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Informations du bureau</h2>
+            <Step1 onDataComplete={handleStep1Complete} />
+            <div className="flex justify-end mt-6">
+              <Button onClick={() => setStep(2)}>
+                Suivant
+                <ChevronRightCircle className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Résultats du scrutin</h2>
+            <Step2 
+              candidates={MOCK_CANDIDATES}
+              onDataComplete={handleStep2Complete}
+              initialData={formData}
+            />
+            <div className="flex justify-between mt-6">
+              <Button variant="outline" onClick={() => setStep(1)}>
+                <ChevronLeftCircle className="mr-2 h-4 w-4" />
+                Retour
+              </Button>
+              <Button onClick={() => setStep(3)}>
+                Suivant
+                <ChevronRightCircle className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div>
+            <h2 className="text-2xl font-bold mb-6">Photo du PV</h2>
+            <Step3 
+              onDataComplete={handleStep3Complete}
+              initialData={formData.pvImage}
+            />
+            <div className="flex justify-between mt-6">
+              <Button variant="outline" onClick={() => setStep(2)}>
+                <ChevronLeftCircle className="mr-2 h-4 w-4" />
+                Retour
+              </Button>
+              <Button 
+                onClick={handleSubmit}
+                disabled={loading}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                {loading ? 'Envoi en cours...' : 'Soumettre les résultats'}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+      </div>
     </div>
   );
 }

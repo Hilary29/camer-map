@@ -30,7 +30,7 @@ export interface VotingResults {
   }[];
 }
   
-  
+
   
   export interface AggregatedResults {
     totalVotes: number

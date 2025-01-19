@@ -27,12 +27,12 @@ export function LoginForm() {
           <div className="grid gap-8 font-regular text-paragraph-md font-inter">
             <div className="grid gap-2">
               <Label
-                htmlFor="name"
+                htmlFor="id"
                 className="font-semibold text-paragraph-md font-inter text-white"
               >
-                Nom
+                ID 
               </Label>
-              <Input id="name" type="name" placeholder="" required />
+              <Input id="id" type="id" placeholder="" required />
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
