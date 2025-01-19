@@ -21,7 +21,7 @@ export default function Step1({ onDataComplete }: Step1Props) {
   useEffect(() => {
     const fetchBureauInfo = async () => {
       try {
-        const response = await fetch('/api/bureau-info', {
+        const response = await fetch('http://192.168.10.24/api/data', {
           credentials: 'include'
         });
 
@@ -101,3 +101,4 @@ export default function Step1({ onDataComplete }: Step1Props) {
     </Card>
   );
 }
+

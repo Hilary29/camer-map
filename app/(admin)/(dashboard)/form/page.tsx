@@ -12,14 +12,14 @@ import { Candidate, VotingResults } from "../../../../types/election";
 import { v4 as uuidv4 } from 'uuid';
 
 const MOCK_CANDIDATES: Candidate[] = [
-  { id: '1', name: 'Candidat A', party: 'Parti A' },
-  { id: '2', name: 'Candidat B', party: 'Parti B' },
-  { id: '3', name: 'Candidat C', party: 'Parti C' },
+  { id: '1', name: 'Paul Biya', party: 'Parti A' },
+  { id: '2', name: 'Maurice Kamto', party: 'Parti B' },
+  { id: '3', name: 'Cabral L', party: 'Parti C' },
 ];
 
 export default function Page() {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<Partial<VotingResults>>({});
+  const [formData, setFormData] = useState<Partial<VotingResults> & { pvImage?: string }>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,20 +51,30 @@ export default function Page() {
       setLoading(true);
       setError(null);
 
+      if (!formData.centerName || !formData.department || !formData.commune || !formData.region) {
+        throw new Error('Informations du bureau incomplètes');
+      }
+
+      if (!formData.registeredVoters || !formData.actualVoters || !formData.candidateVotes) {
+        throw new Error('Résultats du scrutin incomplets');
+      }
+
       const finalData: VotingResults = {
         id: uuidv4(),
-        ...formData,
+        centerName: formData.centerName,
+        department: formData.department,
+        commune: formData.commune,
+        region: formData.region,
+        registeredVoters: formData.registeredVoters,
+        actualVoters: formData.actualVoters,
+        candidateVotes: formData.candidateVotes,
         authenticated: false,
         openingTime: '08:00',
         closingTime: '18:00',
         electionType: 'présidentielle',
         bureauId: '1', // Ces valeurs devraient venir de l'API
-        region: formData.region || '',
-        registeredVoters: formData.registeredVoters || 0,
-        actualVoters: formData.actualVoters || 0,
-        candidateVotes: formData.candidateVotes || [],
-        nullVotes: 0,  // Set to 0 as it's not being entered
-        blankVotes: 0, // Set to 0 as it's not being entered
+        nullVotes: 0,
+        blankVotes: 0,
       };
 
       const response = await fetch('/api/submit-results', {
